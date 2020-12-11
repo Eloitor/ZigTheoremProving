@@ -1,33 +1,33 @@
 const expect = @import("std").testing.expect;
 
+/// A natural is either zero or the successor of a natural.
 const NatTag = enum {
     zero,
     succ,
 };
-
-const Nat = union (NatTag) {
+pub const Nat = union (NatTag) {
     zero : void,
     succ : *const Nat,
 
-   fn zero() Nat {
-       return Nat {.zero = undefined};
-   } 
-   fn succ(n: Nat) Nat{
+   /// Constructors
+   pub const zero = Nat {.zero = undefined};
+   pub fn succ(n: Nat) Nat{
        return Nat {.succ = &n};
    }
-   fn pred(n: Nat) Nat{
+
+   pub fn pred(n: Nat) Nat{
         switch (n) {
-           .zero =>  return Nat.zero(),
+           .zero =>  return Nat.zero,
            .succ =>  |pre| return  pre.*,
        }
    }
-   fn is_zero(n: Nat) bool {
+   pub fn is_zero(n: Nat) bool {
        return switch (n){
-           zero => True,
-           succ => False,
+           zero => true,
+           succ => false,
        };
    }
-   fn eql(n: Nat, m: Nat) bool {
+   pub fn eql(n: Nat, m: Nat) bool {
        switch (n) {
            .zero => |a| switch (m) {
                .zero => return true,
@@ -52,12 +52,12 @@ const Nat = union (NatTag) {
 
 
 test "Naturals" {
-    var zero: Nat = Nat.zero();
+    var zero: Nat = Nat.zero;
     // zero == zero
-    expect( Nat.eql(zero ,Nat.zero()));
+    expect( Nat.eql(zero ,Nat.zero));
     var one: Nat = Nat.succ(zero);
     // one = succ(zero)
-    expect( Nat.eql(one ,Nat.succ(Nat.zero())));
+    expect( Nat.eql(one ,Nat.succ(Nat.zero)));
     var two: Nat = Nat.succ(one);
     // one + one == two
     expect( Nat.eql(Nat.add(one,one), two ));
